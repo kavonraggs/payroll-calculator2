@@ -32,8 +32,6 @@ public class PayrollCalculator {
                 double payRate = Double.parseDouble(employeeInfo[3]);
 
 
-                Employee employee = new Employee(employeeId, name, hoursWorked, payRate);
-
                 try {
                     String text = String.format("%-5d | %-22s | $%6.2f", employeeId, name, (hoursWorked * payRate) );
                     bufWriter.write(text);
