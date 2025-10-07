@@ -1,17 +1,27 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Scanner;
 
 public class PayrollCalculator {
     public static void main(String[] args)  {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("What is the name of the file you are accessing?");
+        String fileRead = scanner.nextLine();
+
+        System.out.println("What do you want to name the file you are creating?");
+        String fileCreated = scanner.nextLine();
 
         try {
-            FileReader fileReader = new FileReader("src/main/resources/employees.csv");
+            FileReader fileReader = new FileReader(fileRead);
             BufferedReader bufReader = new BufferedReader(fileReader);
 
+            FileWriter fileWriter = new FileWriter(fileCreated);
+            BufferedWriter bufWriter = new BufferedWriter(fileWriter);
+
             String input;
+
             bufReader.readLine();
             while ((input = bufReader.readLine()) != null) {
                 String[] employeeInfo = input.split("\\|");
@@ -24,20 +34,18 @@ public class PayrollCalculator {
 
                 Employee employee = new Employee(employeeId, name, hoursWorked, payRate);
 
-                System.out.printf("""
-                                Employee ID: %d\s
-                                 Name: %s\s
-                                 Hours Worked: %.2f\s
-                                 Pay Rate: $%.2f\s
-                                 Gross Pay: $%.2f""",
-                        employee.getEmployeeId(),
-                        employee.getName(),
-                        employee.getHoursWorked(),
-                        employee.getPayRate(),
-                        employee.getGrossPay());
-                System.out.println();
+                try {
+                    String text = String.format("%-5d | %-22s | $%6.2f", employeeId, name, (hoursWorked * payRate) );
+                    bufWriter.write(text);
+                    bufWriter.newLine();
+
+                } catch (IOException e){
+                    System.out.println("Error.");
+                }
+
             }
             bufReader.close();
+            bufWriter.close();
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
         }
